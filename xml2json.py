@@ -7,7 +7,8 @@ pesterfish.py but uses a different XML->JSON mapping.
 The XML->JSON mapping is described at
 http://www.xml.com/pub/a/2006/05/31/converting-between-xml-and-json.html
 
-Rewritten to a command line utility by Hay Kranen < github.com/hay >
+Rewritten to a command line utility by Hay Kranen < github.com/hay > with
+contributions from George Hamilton (gmh04) and Dan Brown (jdanbrown)
 
 XML                              JSON
 <e/>                             "e": null
@@ -95,7 +96,7 @@ def internal_to_elem(pfsh, factory=ET.Element):
         raise ValueError("Illegal structure with multiple tags: %s" % tag)
     tag = tag[0]
     value = pfsh[tag]
-    if isinstance(value,dict):
+    if isinstance(value, dict):
         for k, v in value.items():
             if k[:1] == "@":
                 attribs[k[1:]] = v
@@ -105,9 +106,9 @@ def internal_to_elem(pfsh, factory=ET.Element):
                 tail = v
             elif isinstance(v, list):
                 for v2 in v:
-                    sublist.append(internal_to_elem({k:v2},factory=factory))
+                    sublist.append(internal_to_elem({k:v2}, factory=factory))
             else:
-                sublist.append(internal_to_elem({k:v},factory=factory))
+                sublist.append(internal_to_elem({k:v}, factory=factory))
     else:
         text = value
     e = factory(tag, attribs)
@@ -124,7 +125,7 @@ def elem2json(elem, strip=1):
 
     if hasattr(elem, 'getroot'):
         elem = elem.getroot()
-    return simplejson.dumps(elem_to_internal(elem,strip=strip))
+    return simplejson.dumps(elem_to_internal(elem, strip=strip))
 
 
 def json2elem(json, factory=ET.Element):
@@ -139,12 +140,12 @@ def json2elem(json, factory=ET.Element):
     return internal_to_elem(simplejson.loads(json), factory)
 
 
-def xml2json(xmlstring,strip=1):
+def xml2json(xmlstring, strip=1):
 
     """Convert an XML string into a JSON string."""
 
     elem = ET.fromstring(xmlstring)
-    return elem2json(elem,strip=strip)
+    return elem2json(elem, strip=strip)
 
 
 def json2xml(json, factory=ET.Element):
@@ -159,28 +160,29 @@ def json2xml(json, factory=ET.Element):
     elem = internal_to_elem(simplejson.loads(json), factory)
     return ET.tostring(elem)
 
+
 def main():
     p = optparse.OptionParser(
-        description = 'Converts XML to JSON or the other way around',
-        prog = 'xml2json',
-        usage = '%prog -t xml2json -o file.json file.xml'
+        description='Converts XML to JSON or the other way around',
+        prog='xml2json',
+        usage='%prog -t xml2json -o file.json file.xml'
     )
     p.add_option('--type', '-t', help="'xml2json' or 'json2xml'")
     p.add_option('--out', '-o', help="Write to OUT instead of stdout")
     options, arguments = p.parse_args()
 
-    if len(arguments) == 1 :
+    if len(arguments) == 1:
         input = open(arguments[0]).read()
     else:
         p.print_help()
         sys.exit(-1)
 
-    if (options.type == "xml2json") :
-        out = xml2json(input, strip = 0)
+    if (options.type == "xml2json"):
+        out = xml2json(input, strip=0)
     else:
         out = json2xml(input)
 
-    if (options.out) :
+    if (options.out):
         file = open(options.out, 'w')
         file.write(out)
         file.close()

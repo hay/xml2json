@@ -7,27 +7,27 @@ Usage
 -----
 Make this executable
 
-    $ chmod u+x xml2json
+    $ chmod +x xml2json
 
 Then invoke it from the command line like this
 
-    $ xml2json -t xml2json -f file.xml file.json
+    $ xml2json -t xml2json -o file.json file.xml
 
 Or the other way around
 
-    $ xml2json -t json2xml -f file.json file.xml
+    $ xml2json -t json2xml -o file.xml file.json
 
-You can also output to stdout
+Without the `-o` parameter `xml2json` writes to stdout
 
-    $ xml2json -t json2xml -f file.json -o
+    $ xml2json -t json2xml file.json
 
 More info
 ---------
 Relies on ElementTree for the XML parsing.  This is based on
 pesterfish.py but uses a different XML->JSON mapping.
-The XML->JSON mapping is described [here](http://www.xml.com/pub/a/2006/05/31/converting-between-xml-and-json.html)
+The XML -> JSON mapping is described [here](http://www.xml.com/pub/a/2006/05/31/converting-between-xml-and-json.html)
 
-* Rewritten to a command line utility by [Hay Kranen](http://www.haykranen.nl)
+* Rewritten to a command line utility by [Hay Kranen](http://www.haykranen.nl) with contributions from George Hamilton (gmh04) and Dan Brown (jdanbrown)
 * Fork it on [Github](http://github.com/hay/xml2json)
 
 <pre>
