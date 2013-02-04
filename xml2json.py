@@ -163,7 +163,7 @@ def main():
     p = optparse.OptionParser(
         description = 'Converts XML to JSON or the other way around',
         prog = 'xml2json',
-        usage = '%prog -t xml2json -f file.json file.xml'
+        usage = '%prog -t xml2json -o file.json file.xml'
     )
     p.add_option('--type', '-t', help="'xml2json' or 'json2xml'")
     p.add_option('--out', '-o', help="Write to OUT instead of stdout")
