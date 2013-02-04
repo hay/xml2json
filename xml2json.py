@@ -169,17 +169,11 @@ def main():
     p.add_option('--out', '-o', help="Write to OUT instead of stdout")
     options, arguments = p.parse_args()
 
-    if arguments :
-        # check if this file exists
-        if os.path.isfile(arguments[0]) :
-            input_name = arguments[0]
-        else :
-            sys.exit(-1)
+    if len(arguments) == 1 :
+        input = open(arguments[0]).read()
     else:
         p.print_help()
         sys.exit(-1)
-
-    input = open(input_name).read()
 
     if (options.type == "xml2json") :
         out = xml2json(input, strip = 0)
