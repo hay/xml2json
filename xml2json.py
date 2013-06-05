@@ -25,8 +25,8 @@ This is very similar to the mapping used for Yahoo Web Services
 This is a mess in that it is so unpredictable -- it requires lots of testing
 (e.g. to see if values are lists or strings or dictionaries).  For use
 in Python this could be vastly cleaner.  Think about whether the internal
-form can be more self-consistent while maintaining good external characteristics
-for the JSON.
+form can be more self-consistent while maintaining good external
+characteristics for the JSON.
 
 Look at the Yahoo version closely to see how it works.  Maybe can adopt
 that completely if it makes more sense...
@@ -46,11 +46,11 @@ def elem_to_internal(elem, strip=1):
 
     d = {}
     for key, value in elem.attrib.items():
-        d['@'+key] = value
+        d['@' + key] = value
 
     # loop over subelements to merge them
     for subelem in elem:
-        v = elem_to_internal(subelem,strip=strip)
+        v = elem_to_internal(subelem, strip=strip)
         tag = subelem.tag
         value = v[tag]
         try:
@@ -66,15 +66,18 @@ def elem_to_internal(elem, strip=1):
     tail = elem.tail
     if strip:
         # ignore leading and trailing whitespace
-        if text: text = text.strip()
-        if tail: tail = tail.strip()
+        if text:
+            text = text.strip()
+        if tail:
+            tail = tail.strip()
 
     if tail:
         d['#tail'] = tail
 
     if d:
         # use #text element if other attributes exist
-        if text: d["#text"] = text
+        if text:
+            d["#text"] = text
     else:
         # text is the value if no attributes
         d = text or None
@@ -109,9 +112,9 @@ def internal_to_elem(pfsh, factory=ET.Element):
                 tail = v
             elif isinstance(v, list):
                 for v2 in v:
-                    sublist.append(internal_to_elem({k:v2}, factory=factory))
+                    sublist.append(internal_to_elem({k: v2}, factory=factory))
             else:
-                sublist.append(internal_to_elem({k:v}, factory=factory))
+                sublist.append(internal_to_elem({k: v}, factory=factory))
     else:
         text = value
     e = factory(tag, attribs)
