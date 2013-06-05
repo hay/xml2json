@@ -34,11 +34,14 @@ that completely if it makes more sense...
 R. White, 2006 November 6
 """
 
+import json
+import optparse
+import sys
+
 import xml.etree.cElementTree as ET
-import simplejson, optparse, sys, os
 
-def elem_to_internal(elem,strip=1):
 
+def elem_to_internal(elem, strip=1):
     """Convert an Element into an internal dictionary (not JSON!)."""
 
     d = {}
@@ -125,10 +128,10 @@ def elem2json(elem, strip=1):
 
     if hasattr(elem, 'getroot'):
         elem = elem.getroot()
-    return simplejson.dumps(elem_to_internal(elem, strip=strip))
+    return json.dumps(elem_to_internal(elem, strip=strip))
 
 
-def json2elem(json, factory=ET.Element):
+def json2elem(json_data, factory=ET.Element):
 
     """Convert a JSON string into an Element.
 
@@ -137,7 +140,7 @@ def json2elem(json, factory=ET.Element):
     as the factory parameter.
     """
 
-    return internal_to_elem(simplejson.loads(json), factory)
+    return internal_to_elem(json.loads(json_data), factory)
 
 
 def xml2json(xmlstring, strip=1):
@@ -148,7 +151,7 @@ def xml2json(xmlstring, strip=1):
     return elem2json(elem, strip=strip)
 
 
-def json2xml(json, factory=ET.Element):
+def json2xml(json_data, factory=ET.Element):
 
     """Convert a JSON string into an XML string.
 
@@ -157,7 +160,7 @@ def json2xml(json, factory=ET.Element):
     as the factory parameter.
     """
 
-    elem = internal_to_elem(simplejson.loads(json), factory)
+    elem = internal_to_elem(json.loads(json_data), factory)
     return ET.tostring(elem)
 
 
