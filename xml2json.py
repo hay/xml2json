@@ -45,7 +45,7 @@ def elem_to_internal(elem, strip=1):
     """Convert an Element into an internal dictionary (not JSON!)."""
 
     d = {}
-    for key, value in elem.attrib.items():
+    for key, value in list(elem.attrib.items()):
         d['@' + key] = value
 
     # loop over subelements to merge them
@@ -97,13 +97,13 @@ def internal_to_elem(pfsh, factory=ET.Element):
     text = None
     tail = None
     sublist = []
-    tag = pfsh.keys()
+    tag = list(pfsh.keys())
     if len(tag) != 1:
         raise ValueError("Illegal structure with multiple tags: %s" % tag)
     tag = tag[0]
     value = pfsh[tag]
     if isinstance(value, dict):
-        for k, v in value.items():
+        for k, v in list(value.items()):
             if k[:1] == "@":
                 attribs[k[1:]] = v
             elif k == "#text":
@@ -193,7 +193,7 @@ def main():
         file.write(out)
         file.close()
     else:
-        print out
+        print(out)
 
 if __name__ == "__main__":
     main()
