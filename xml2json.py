@@ -25,8 +25,8 @@ This is very similar to the mapping used for Yahoo Web Services
 This is a mess in that it is so unpredictable -- it requires lots of testing
 (e.g. to see if values are lists or strings or dictionaries).  For use
 in Python this could be vastly cleaner.  Think about whether the internal
-form can be more self-consistent while maintaining good external characteristics
-for the JSON.
+form can be more self-consistent while maintaining good external
+characteristics for the JSON.
 
 Look at the Yahoo version closely to see how it works.  Maybe can adopt
 that completely if it makes more sense...
@@ -34,20 +34,23 @@ that completely if it makes more sense...
 R. White, 2006 November 6
 """
 
+import json
+import optparse
+import sys
+
 import xml.etree.cElementTree as ET
-import simplejson, optparse, sys, os
 
-def elem_to_internal(elem,strip=1):
 
+def elem_to_internal(elem, strip=1):
     """Convert an Element into an internal dictionary (not JSON!)."""
 
     d = {}
-    for key, value in elem.attrib.items():
-        d['@'+key] = value
+    for key, value in list(elem.attrib.items()):
+        d['@' + key] = value
 
     # loop over subelements to merge them
     for subelem in elem:
-        v = elem_to_internal(subelem,strip=strip)
+        v = elem_to_internal(subelem, strip=strip)
         tag = subelem.tag
         value = v[tag]
         try:
@@ -63,15 +66,18 @@ def elem_to_internal(elem,strip=1):
     tail = elem.tail
     if strip:
         # ignore leading and trailing whitespace
-        if text: text = text.strip()
-        if tail: tail = tail.strip()
+        if text:
+            text = text.strip()
+        if tail:
+            tail = tail.strip()
 
     if tail:
         d['#tail'] = tail
 
     if d:
         # use #text element if other attributes exist
-        if text: d["#text"] = text
+        if text:
+            d["#text"] = text
     else:
         # text is the value if no attributes
         d = text or None
@@ -91,13 +97,13 @@ def internal_to_elem(pfsh, factory=ET.Element):
     text = None
     tail = None
     sublist = []
-    tag = pfsh.keys()
+    tag = list(pfsh.keys())
     if len(tag) != 1:
         raise ValueError("Illegal structure with multiple tags: %s" % tag)
     tag = tag[0]
     value = pfsh[tag]
     if isinstance(value, dict):
-        for k, v in value.items():
+        for k, v in list(value.items()):
             if k[:1] == "@":
                 attribs[k[1:]] = v
             elif k == "#text":
@@ -106,9 +112,9 @@ def internal_to_elem(pfsh, factory=ET.Element):
                 tail = v
             elif isinstance(v, list):
                 for v2 in v:
-                    sublist.append(internal_to_elem({k:v2}, factory=factory))
+                    sublist.append(internal_to_elem({k: v2}, factory=factory))
             else:
-                sublist.append(internal_to_elem({k:v}, factory=factory))
+                sublist.append(internal_to_elem({k: v}, factory=factory))
     else:
         text = value
     e = factory(tag, attribs)
@@ -125,10 +131,10 @@ def elem2json(elem, strip=1):
 
     if hasattr(elem, 'getroot'):
         elem = elem.getroot()
-    return simplejson.dumps(elem_to_internal(elem, strip=strip))
+    return json.dumps(elem_to_internal(elem, strip=strip))
 
 
-def json2elem(json, factory=ET.Element):
+def json2elem(json_data, factory=ET.Element):
 
     """Convert a JSON string into an Element.
 
@@ -137,7 +143,7 @@ def json2elem(json, factory=ET.Element):
     as the factory parameter.
     """
 
-    return internal_to_elem(simplejson.loads(json), factory)
+    return internal_to_elem(json.loads(json_data), factory)
 
 
 def xml2json(xmlstring, strip=1):
@@ -148,7 +154,7 @@ def xml2json(xmlstring, strip=1):
     return elem2json(elem, strip=strip)
 
 
-def json2xml(json, factory=ET.Element):
+def json2xml(json_data, factory=ET.Element):
 
     """Convert a JSON string into an XML string.
 
@@ -157,7 +163,7 @@ def json2xml(json, factory=ET.Element):
     as the factory parameter.
     """
 
-    elem = internal_to_elem(simplejson.loads(json), factory)
+    elem = internal_to_elem(json.loads(json_data), factory)
     return ET.tostring(elem)
 
 
@@ -187,7 +193,7 @@ def main():
         file.write(out)
         file.close()
     else:
-        print out
+        print(out)
 
 if __name__ == "__main__":
     main()
