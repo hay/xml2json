@@ -21,14 +21,23 @@ Without the `-o` parameter `xml2json` writes to stdout
 
     $ xml2json -t json2xml file.json
 
-More info
----------
-Relies on ElementTree for the XML parsing.  This is based on
+License
+-------
+xml2json is released under the terms of the [MIT license](http://opensource.org/licenses/MIT).
+
+Contributors
+------------
+This script was originally written by R.White, Rewritten to a command line utility by [Hay Kranen](http://www.haykranen.nl) with contributions from George Hamilton (gmh04) and Dan Brown (jdanbrown)
+
+Links
+------
+* [Github](http://github.com/hay/xml2json)
+
+How it works
+------------
+xml2json relies on ElementTree for the XML parsing.  This is based on
 pesterfish.py but uses a different XML->JSON mapping.
 The XML -> JSON mapping is described [here](http://www.xml.com/pub/a/2006/05/31/converting-between-xml-and-json.html)
-
-* Rewritten to a command line utility by [Hay Kranen](http://www.haykranen.nl) with contributions from George Hamilton (gmh04) and Dan Brown (jdanbrown)
-* Fork it on [Github](http://github.com/hay/xml2json)
 
 <pre>
 XML                              JSON

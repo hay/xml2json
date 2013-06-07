@@ -8,7 +8,7 @@ setup(
     author = "Hay Kranen",
     author_email = "huskyr@gmail.com",
     description = ("Python script converts XML to JSON or the other way around"),
-    license = "GPLv3+",
+    license = "LICENSE",
     keywords = "xml json",
     url = "http://github.com/hay/xml2json",
     #packages=find_packages(exclude=['ez_setup']),
