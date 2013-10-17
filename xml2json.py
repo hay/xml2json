@@ -41,25 +41,34 @@ import sys
 import xml.etree.cElementTree as ET
 
 
+def strip_tag(tag):
+    strip_ns_tag = tag
+    split_array = tag.split('}')
+    strip_ns_tag = split_array[1]
+    tag = strip_ns_tag
+    return tag
+
+
 def elem_to_internal(elem, strip_ns=1, strip=1):
     """Convert an Element into an internal dictionary (not JSON!)."""
 
     d = {}
-    #for key, value in list(elem.attrib.items()):
-    #    d['@' + key] = value
+    elem_tag = elem.tag
+    if strip_ns:
+        elem_tag = strip_tag(elem.tag)
+    else:
+        for key, value in list(elem.attrib.items()):
+            d['@' + key] = value
 
     # loop over subelements to merge them
     for subelem in elem:
         v = elem_to_internal(subelem, strip_ns=strip_ns, strip=strip)
+
         tag = subelem.tag
+        if strip_ns:
+            tag = strip_tag(subelem.tag)
 
         value = v[tag]
-
-        if strip_ns:
-            strip_ns_tag = tag
-            split_array = tag.split('}')
-            strip_ns_tag = split_array[1]
-            tag = strip_ns_tag
 
         try:
             # add to existing list for this tag
@@ -89,10 +98,7 @@ def elem_to_internal(elem, strip_ns=1, strip=1):
     else:
         # text is the value if no attributes
         d = text or None
-
-    #split_array = elem.tag.split('}')
-    #strip_ns_tag = split_array[1]
-    return {elem.tag: d}
+    return {elem_tag: d}
 
 
 def internal_to_elem(pfsh, factory=ET.Element):
