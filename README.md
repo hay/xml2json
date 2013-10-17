@@ -21,6 +21,15 @@ Without the `-o` parameter `xml2json` writes to stdout
 
     $ xml2json -t json2xml file.json
 
+Additional the options:
+Strip text (#text and #tail) in the json
+
+    $ xml2json -t xml2json -o file.json file.xml --strip_text
+
+Strip namespace in the json 
+
+    $ xml2json -t xml2json -o file.json file.xml --strip_namespace
+
 License
 -------
 xml2json is released under the terms of the [MIT license](http://opensource.org/licenses/MIT).
