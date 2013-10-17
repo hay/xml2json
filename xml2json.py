@@ -41,27 +41,34 @@ import sys
 import xml.etree.cElementTree as ET
 
 
-def elem_to_internal(elem, strip=1):
+def elem_to_internal(elem, strip_ns=1, strip=1):
     """Convert an Element into an internal dictionary (not JSON!)."""
 
     d = {}
-    for key, value in list(elem.attrib.items()):
-        d['@' + key] = value
+    #for key, value in list(elem.attrib.items()):
+    #    d['@' + key] = value
 
     # loop over subelements to merge them
     for subelem in elem:
-        v = elem_to_internal(subelem, strip=strip)
+        v = elem_to_internal(subelem, strip_ns=strip_ns, strip=strip)
         tag = subelem.tag
+
         value = v[tag]
+
+        filtered_tag = tag
+        if strip_ns:
+            split_array = tag.split('}')
+            filtered_tag = split_array[1]
+
         try:
             # add to existing list for this tag
-            d[tag].append(value)
+            d[filtered_tag].append(value)
         except AttributeError:
             # turn existing entry into a list
-            d[tag] = [d[tag], value]
+            d[filtered_tag] = [d[tag], value]
         except KeyError:
             # add a new non-list entry
-            d[tag] = value
+            d[filtered_tag] = value
     text = elem.text
     tail = elem.tail
     if strip:
@@ -81,6 +88,9 @@ def elem_to_internal(elem, strip=1):
     else:
         # text is the value if no attributes
         d = text or None
+
+    #split_array = elem.tag.split('}')
+    #filtered_tag = split_array[1]
     return {elem.tag: d}
 
 
@@ -125,13 +135,13 @@ def internal_to_elem(pfsh, factory=ET.Element):
     return e
 
 
-def elem2json(elem, strip=1):
+def elem2json(elem, strip_ns=1, strip=1):
 
     """Convert an ElementTree or Element into a JSON string."""
 
     if hasattr(elem, 'getroot'):
         elem = elem.getroot()
-    return json.dumps(elem_to_internal(elem, strip=strip))
+    return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip))
 
 
 def json2elem(json_data, factory=ET.Element):
@@ -146,12 +156,12 @@ def json2elem(json_data, factory=ET.Element):
     return internal_to_elem(json.loads(json_data), factory)
 
 
-def xml2json(xmlstring, strip=1):
+def xml2json(xmlstring, strip_ns=1, strip=1):
 
     """Convert an XML string into a JSON string."""
 
     elem = ET.fromstring(xmlstring)
-    return elem2json(elem, strip=strip)
+    return elem2json(elem, strip_ns=strip_ns, strip=strip)
 
 
 def json2xml(json_data, factory=ET.Element):
@@ -184,7 +194,7 @@ def main():
         sys.exit(-1)
 
     if (options.type == "xml2json"):
-        out = xml2json(input, strip=0)
+        out = xml2json(input)
     else:
         out = json2xml(input)
 
