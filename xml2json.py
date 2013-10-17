@@ -55,20 +55,21 @@ def elem_to_internal(elem, strip_ns=1, strip=1):
 
         value = v[tag]
 
-        filtered_tag = tag
         if strip_ns:
+            strip_ns_tag = tag
             split_array = tag.split('}')
-            filtered_tag = split_array[1]
+            strip_ns_tag = split_array[1]
+            tag = strip_ns_tag
 
         try:
             # add to existing list for this tag
-            d[filtered_tag].append(value)
+            d[tag].append(value)
         except AttributeError:
             # turn existing entry into a list
-            d[filtered_tag] = [d[tag], value]
+            d[tag] = [d[tag], value]
         except KeyError:
             # add a new non-list entry
-            d[filtered_tag] = value
+            d[tag] = value
     text = elem.text
     tail = elem.tail
     if strip:
@@ -90,7 +91,7 @@ def elem_to_internal(elem, strip_ns=1, strip=1):
         d = text or None
 
     #split_array = elem.tag.split('}')
-    #filtered_tag = split_array[1]
+    #strip_ns_tag = split_array[1]
     return {elem.tag: d}
 
 
@@ -185,6 +186,12 @@ def main():
     )
     p.add_option('--type', '-t', help="'xml2json' or 'json2xml'")
     p.add_option('--out', '-o', help="Write to OUT instead of stdout")
+    p.add_option(
+        '--strip_text', action="store_true",
+        dest="strip_text", help="Strip text for xml2json")
+    p.add_option(
+        '--strip_namespace', action="store_true",
+        dest="strip_ns", help="Strip namespace for xml2json")
     options, arguments = p.parse_args()
 
     if len(arguments) == 1:
@@ -193,8 +200,15 @@ def main():
         p.print_help()
         sys.exit(-1)
 
+    strip = 0
+    strip_ns = 0
+    if options.strip_text:
+        strip = 1
+    if options.strip_ns:
+        strip_ns = 1
+
     if (options.type == "xml2json"):
-        out = xml2json(input)
+        out = xml2json(input, strip_ns, strip)
     else:
         out = json2xml(input)
 
