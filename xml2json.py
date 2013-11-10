@@ -37,6 +37,7 @@ R. White, 2006 November 6
 import json
 import optparse
 import sys
+import os
 
 import xml.etree.cElementTree as ET
 
@@ -186,9 +187,9 @@ def json2xml(json_data, factory=ET.Element):
 
 def main():
     p = optparse.OptionParser(
-        description='Converts XML to JSON or the other way around',
+        description='Converts XML to JSON or the other way around.  Reads from standard input by default, or from file if given.',
         prog='xml2json',
-        usage='%prog -t xml2json -o file.json file.xml'
+        usage='%prog -t xml2json -o file.json [file]'
     )
     p.add_option('--type', '-t', help="'xml2json' or 'json2xml'")
     p.add_option('--out', '-o', help="Write to OUT instead of stdout")
@@ -200,11 +201,16 @@ def main():
         dest="strip_ns", help="Strip namespace for xml2json")
     options, arguments = p.parse_args()
 
+    inputstream = sys.stdin
     if len(arguments) == 1:
-        input = open(arguments[0]).read()
-    else:
-        p.print_help()
-        sys.exit(-1)
+        try:
+            inputstream = open(arguments[0])
+        except:
+            sys.stderr.write("Problem reading '{0}'\n".format(arguments[0]))
+            p.print_help()
+            sys.exit(-1)
+
+    input = inputstream.read()
 
     strip = 0
     strip_ns = 0
