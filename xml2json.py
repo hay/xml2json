@@ -143,13 +143,17 @@ def internal_to_elem(pfsh, factory=ET.Element):
     return e
 
 
-def elem2json(elem, strip_ns=1, strip=1):
+def elem2json(elem, options, strip_ns=1, strip=1):
 
     """Convert an ElementTree or Element into a JSON string."""
 
     if hasattr(elem, 'getroot'):
         elem = elem.getroot()
-    return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip))
+
+    if options.pretty:
+        return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip), sort_keys=True, indent=4, separators=(',', ': '))
+    else:
+        return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip))
 
 
 def json2elem(json_data, factory=ET.Element):
@@ -164,12 +168,12 @@ def json2elem(json_data, factory=ET.Element):
     return internal_to_elem(json.loads(json_data), factory)
 
 
-def xml2json(xmlstring, strip_ns=1, strip=1):
+def xml2json(xmlstring, options, strip_ns=1, strip=1):
 
     """Convert an XML string into a JSON string."""
 
     elem = ET.fromstring(xmlstring)
-    return elem2json(elem, strip_ns=strip_ns, strip=strip)
+    return elem2json(elem, options, strip_ns=strip_ns, strip=strip)
 
 
 def json2xml(json_data, factory=ET.Element):
@@ -197,6 +201,9 @@ def main():
         '--strip_text', action="store_true",
         dest="strip_text", help="Strip text for xml2json")
     p.add_option(
+        '--pretty', action="store_true",
+        dest="pretty", help="Format JSON output so it is easier to read")
+    p.add_option(
         '--strip_namespace', action="store_true",
         dest="strip_ns", help="Strip namespace for xml2json")
     options, arguments = p.parse_args()
@@ -220,7 +227,7 @@ def main():
         strip_ns = 1
 
     if (options.type == "xml2json"):
-        out = xml2json(input, strip_ns, strip)
+        out = xml2json(input, options, strip_ns, strip)
     else:
         out = json2xml(input)
 
