@@ -199,6 +199,9 @@ def main():
     p.add_option(
         '--strip_namespace', action="store_true",
         dest="strip_ns", help="Strip namespace for xml2json")
+    p.add_option(
+        '--strip_newlines', action="store_true",
+        dest="strip_nl", help="Strip newlines for xml2json")
     options, arguments = p.parse_args()
 
     inputstream = sys.stdin
@@ -218,7 +221,8 @@ def main():
         strip = 1
     if options.strip_ns:
         strip_ns = 1
-
+    if options.strip_nl:
+       input = input.replace('\n', '').replace('\r','')
     if (options.type == "xml2json"):
         out = xml2json(input, strip_ns, strip)
     else:
@@ -233,3 +237,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
