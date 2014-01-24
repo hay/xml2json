@@ -21,8 +21,9 @@ setup(
     install_requires=[
         'simplejson'
         ],
-    entry_points="""
-            [console_scripts]
-            xml2json = xml2json:xml2json
-          """,
-    )
+    entry_points={
+        'console_scripts': [
+            'xml2json = xml2json:main'
+        ]
+    }
+)
