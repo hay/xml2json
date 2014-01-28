@@ -45,8 +45,9 @@ import xml.etree.cElementTree as ET
 def strip_tag(tag):
     strip_ns_tag = tag
     split_array = tag.split('}')
-    strip_ns_tag = split_array[1]
-    tag = strip_ns_tag
+    if len(split_array) > 1:
+        strip_ns_tag = split_array[1]
+        tag = strip_ns_tag
     return tag
 
 
@@ -195,7 +196,7 @@ def main():
         prog='xml2json',
         usage='%prog -t xml2json -o file.json [file]'
     )
-    p.add_option('--type', '-t', help="'xml2json' or 'json2xml'")
+    p.add_option('--type', '-t', help="'xml2json' or 'json2xml'",default="xml2json")
     p.add_option('--out', '-o', help="Write to OUT instead of stdout")
     p.add_option(
         '--strip_text', action="store_true",
