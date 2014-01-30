@@ -29,6 +29,12 @@ Strip text (#text and #tail) in the json
 Strip namespace in the json 
 
     $ xml2json -t xml2json -o file.json file.xml --strip_namespace
+    
+Installation
+------------
+Either clone this repo or use `pip` like this:
+
+    pip install https://github.com/hay/xml2json/zipball/master
 
 License
 -------
