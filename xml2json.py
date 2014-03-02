@@ -185,8 +185,10 @@ def json2xml(json_data, factory=ET.Element):
     default; if you want to use something else, pass the Element class
     as the factory parameter.
     """
+    if not isinstance(json_data, dict):
+        json_data = json.loads(json_data)
 
-    elem = internal_to_elem(json.loads(json_data), factory)
+    elem = internal_to_elem(json_data, factory)
     return ET.tostring(elem)
 
 
@@ -230,7 +232,7 @@ def main():
     if options.strip_ns:
         strip_ns = 1
     if options.strip_nl:
-       input = input.replace('\n', '').replace('\r','')
+        input = input.replace('\n', '').replace('\r','')
     if (options.type == "xml2json"):
         out = xml2json(input, options, strip_ns, strip)
     else:
