@@ -29,6 +29,12 @@ Strip text (#text and #tail) in the json
 Strip namespace in the json 
 
     $ xml2json -t xml2json -o file.json file.xml --strip_namespace
+
+In code
+    from xml2json import json2xml
+    d = {'r': {'@p': 'p1', '#text': 't1', 'c': 't2'}}
+    print(json2xml(d))
+    > b'<r p="p1">t1<c>t2</c></r>'
     
 Installation
 ------------
