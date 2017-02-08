@@ -38,6 +38,7 @@ import json
 import optparse
 import sys
 import os
+from collections import OrderedDict
 
 import xml.etree.cElementTree as ET
 
@@ -54,7 +55,7 @@ def strip_tag(tag):
 def elem_to_internal(elem, strip_ns=1, strip=1):
     """Convert an Element into an internal dictionary (not JSON!)."""
 
-    d = {}
+    d = OrderedDict()
     elem_tag = elem.tag
     if strip_ns:
         elem_tag = strip_tag(elem.tag)
@@ -112,7 +113,7 @@ def internal_to_elem(pfsh, factory=ET.Element):
     Element class as the factory parameter.
     """
 
-    attribs = {}
+    attribs = OrderedDict()
     text = None
     tail = None
     sublist = []
@@ -152,7 +153,7 @@ def elem2json(elem, options, strip_ns=1, strip=1):
         elem = elem.getroot()
 
     if options.pretty:
-        return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip), sort_keys=True, indent=4, separators=(',', ': '))
+        return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip), indent=4, separators=(',', ': '))
     else:
         return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip))
 
