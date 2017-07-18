@@ -59,9 +59,8 @@ def elem_to_internal(elem, strip_ns=1, strip=1):
     elem_tag = elem.tag
     if strip_ns:
         elem_tag = strip_tag(elem.tag)
-    else:
-        for key, value in list(elem.attrib.items()):
-            d['@' + key] = value
+    for key, value in list(elem.attrib.items()):
+        d['@' + key] = value
 
     # loop over subelements to merge them
     for subelem in elem:
