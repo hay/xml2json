@@ -38,6 +38,7 @@ import json
 import optparse
 import sys
 import os
+from collections import OrderedDict
 
 import xml.etree.cElementTree as ET
 
@@ -54,13 +55,12 @@ def strip_tag(tag):
 def elem_to_internal(elem, strip_ns=1, strip=1):
     """Convert an Element into an internal dictionary (not JSON!)."""
 
-    d = {}
+    d = OrderedDict()
     elem_tag = elem.tag
     if strip_ns:
         elem_tag = strip_tag(elem.tag)
-    else:
-        for key, value in list(elem.attrib.items()):
-            d['@' + key] = value
+    for key, value in list(elem.attrib.items()):
+        d['@' + key] = value
 
     # loop over subelements to merge them
     for subelem in elem:
@@ -112,7 +112,7 @@ def internal_to_elem(pfsh, factory=ET.Element):
     Element class as the factory parameter.
     """
 
-    attribs = {}
+    attribs = OrderedDict()
     text = None
     tail = None
     sublist = []
@@ -152,7 +152,7 @@ def elem2json(elem, options, strip_ns=1, strip=1):
         elem = elem.getroot()
 
     if options.pretty:
-        return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip), sort_keys=True, indent=4, separators=(',', ': '))
+        return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip), indent=4, separators=(',', ': '))
     else:
         return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip))
 
@@ -185,8 +185,10 @@ def json2xml(json_data, factory=ET.Element):
     default; if you want to use something else, pass the Element class
     as the factory parameter.
     """
+    if not isinstance(json_data, dict):
+        json_data = json.loads(json_data)
 
-    elem = internal_to_elem(json.loads(json_data), factory)
+    elem = internal_to_elem(json_data, factory)
     return ET.tostring(elem)
 
 
@@ -230,7 +232,7 @@ def main():
     if options.strip_ns:
         strip_ns = 1
     if options.strip_nl:
-       input = input.replace('\n', '').replace('\r','')
+        input = input.replace('\n', '').replace('\r','')
     if (options.type == "xml2json"):
         out = xml2json(input, options, strip_ns, strip)
     else:
