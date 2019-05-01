@@ -1,6 +1,13 @@
 XML2JSON
 ========
 
+** This module is deprecated and will not be updated anymore (May 2019) **
+
+* To convert between text-based data formats (including XML and JSON) use my library `[dataknead](http://github.com/hay/dataknead)`.
+* To work with XML in Python i recommend the excellent `[xmltodict](https://github.com/martinblech/xmltodict)`.
+
+## Deprecated documentation
+
 Python script converts XML to JSON or the other way around
 
 Usage
@@ -26,7 +33,7 @@ Strip text (#text and #tail) in the json
 
     $ xml2json -t xml2json -o file.json file.xml --strip_text
 
-Strip namespace in the json 
+Strip namespace in the json
 
     $ xml2json -t xml2json -o file.json file.xml --strip_namespace
 
